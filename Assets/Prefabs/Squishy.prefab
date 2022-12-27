@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2084458550523589155}
-  - component: {fileID: 950605069335529936}
   - component: {fileID: 4661958457055916807}
-  - component: {fileID: 1246835277}
+  - component: {fileID: 1863906850}
+  - component: {fileID: 1863906849}
+  - component: {fileID: 1863906848}
   m_Layer: 0
   m_Name: Squishy
   m_TagString: Untagged
@@ -34,22 +35,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &950605069335529936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5469341049768164992}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07c79ea99980544dba7f679605f5af87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
-  range: 2
-  rotSpeed: 5
-  rotRange: 20
 --- !u!114 &4661958457055916807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,27 +51,74 @@ MonoBehaviour:
   - {fileID: 7304142355195221320}
   - {fileID: 8823070229553733985}
   - {fileID: 3108354494219951818}
-  _inputFreqX: 0
-  _inputFreqY: 0
-  desiredDirection: {x: 0, y: 0, z: 0}
+  - {fileID: 2078683591}
   _direction: {x: 0, y: 0, z: 0}
-  _speed: 0
-  _moveInterval: 0.3
-  _moveDuration: 0.5
+  maxSpeed: 10
+  maxAcceleration: 10
+  _speed: 2
+  _moveInterval: 0.13
+  _moveDuration: 0.1
   velocity: {x: 0, y: 0, z: 0}
---- !u!114 &1246835277
+  delta: {x: 0, y: 0, z: 0}
+--- !u!54 &1863906850
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5469341049768164992}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!135 &1863906849
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5469341049768164992}
+  m_Material: {fileID: 13400000, guid: 136aecc23346e4e589679d48dcffd689, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1863906848
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5469341049768164992}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fd82a616710d4512ae5a7b535976611, type: 3}
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 1
+  m_Actions: {fileID: -944628639613478452, guid: df6a7208e4d90446493e2e2c4533533f, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Gamepad
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1001 &2645947174158359492
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -197,6 +229,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 63d1e76e366aa44a5a891e71b51d41ac, type: 3}
   m_PrefabInstance: {fileID: 2645947174158359492}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4784802356408856935 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7412716679733176995, guid: 63d1e76e366aa44a5a891e71b51d41ac, type: 3}
+  m_PrefabInstance: {fileID: 2645947174158359492}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8354565576528207945 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6289606522716814221, guid: 63d1e76e366aa44a5a891e71b51d41ac, type: 3}
@@ -224,13 +261,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 342fe05361c3f48009e092ad85dd5306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _socket: {fileID: 0}
-  _bone: {fileID: 0}
-  _contract: {fileID: 0}
-  _ballJoint: {fileID: 0}
-  _toNormal: {fileID: 0}
-  _tip: {fileID: 0}
-  _volume: {fileID: 0}
+--- !u!114 &2078683591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4784802356408856935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 342fe05361c3f48009e092ad85dd5306, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3108354494219951818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,13 +285,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 342fe05361c3f48009e092ad85dd5306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _socket: {fileID: 0}
-  _bone: {fileID: 0}
-  _contract: {fileID: 0}
-  _ballJoint: {fileID: 0}
-  _toNormal: {fileID: 0}
-  _tip: {fileID: 0}
-  _volume: {fileID: 0}
 --- !u!114 &7304142355195221320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,10 +297,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 342fe05361c3f48009e092ad85dd5306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _socket: {fileID: 0}
-  _bone: {fileID: 0}
-  _contract: {fileID: 0}
-  _ballJoint: {fileID: 0}
-  _toNormal: {fileID: 0}
-  _tip: {fileID: 0}
-  _volume: {fileID: 0}

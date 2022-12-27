@@ -33,6 +33,7 @@ namespace Nisl
         private Vector3 _tipTarget = Vector3.zero;
         private Vector3 _tipNormal = Vector3.zero;
         private Vector3 _rayOffset = new Vector3(0f, 0.6f, 0f);
+        private Vector3 _lastPosition;
         
 
         private Transform _rootTarget = null;
@@ -59,6 +60,7 @@ namespace Nisl
             _rController = rController;
             _bodyRef = t;
 
+            _lastPosition = _socket.position;
             _restPosition = _socket.InverseTransformPoint(_tip.position);
             _currentWorld = _tip.position;
             _contractRestDist = (_tip.position - _contract.position).magnitude;  
@@ -83,7 +85,7 @@ namespace Nisl
             _fromPosition =  _tip.position;
             _targetPosition = _socket.TransformPoint(_restPosition);
 
-            Vector3 stepOffset = Random.insideUnitSphere * 0.3f;
+            Vector3 stepOffset = _rController.delta * -15;
             stepOffset.y = 0f;
             if (Physics.Raycast(_targetPosition + _rayOffset + stepOffset, -_bodyRef.up, out _tipRaycast, 2f, _groundMask))
             {
@@ -127,7 +129,7 @@ namespace Nisl
             _contract.position = _currentWorld - _contractPos;
             _contract.rotation = _contractRotation;
             _ballJoint.rotation = _ballJointRotation;
-            //_toNormal.rotation = _toNormalRotation;
+            _toNormal.rotation = _toNormalRotation;
             _volume.rotation = _volumeRotation;
 
             Debug.DrawLine(_socket.position, _currentWorld, Color.red);
