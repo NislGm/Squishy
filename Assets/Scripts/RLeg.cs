@@ -62,6 +62,7 @@ namespace Nisl
 
             _lastPosition = _socket.position;
             _restPosition = _socket.InverseTransformPoint(_tip.position);
+            _tipTarget = _restPosition;
             _currentWorld = _tip.position;
             _contractRestDist = (_tip.position - _contract.position).magnitude;  
 
@@ -82,16 +83,21 @@ namespace Nisl
             float t = 0f;
             float sineHalf;
 
-            _fromPosition =  _tip.position;
+            _fromPosition =  _tipTarget;
             _targetPosition = _socket.TransformPoint(_restPosition);
 
-            Vector3 stepOffset = _rController.delta * -15;
+            if((_fromPosition - _targetPosition).magnitude < 0.2f)
+                yield break;
+
+            Vector3 stepOffset = _rController.delta.normalized * -0.5f;
             stepOffset.y = 0f;
             if (Physics.Raycast(_targetPosition + _rayOffset + stepOffset, -_bodyRef.up, out _tipRaycast, 2f, _groundMask))
             {
                 _tipTarget = _tipRaycast.point;
                 _tipNormal = _tipRaycast.normal;
             }
+
+            Vector3 delta = _socket.position;
 
             while (t < 1f)
             {
@@ -100,9 +106,10 @@ namespace Nisl
                     t = 1f;
                 sineHalf = Mathf.Sin(t * PI);
                 
-                _currentWorld = Vector3.Lerp(_fromPosition, _tipTarget, t);
+                _currentWorld = Vector3.Lerp(_fromPosition, _tipTarget + _socket.position - delta, t);
                 _contractRotationOffset = Quaternion.AngleAxis(sineHalf * -145, Vector3.right);
                 _toNormalRotation = Quaternion.LookRotation(_tipNormal, Vector3.up);
+
                 yield return null;
             }
         }

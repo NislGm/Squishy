@@ -7,19 +7,20 @@ namespace Nisl
 {
     public class RController : MonoBehaviour
     {
+        [SerializeField] private Transform playerInputSpace = default;
         [SerializeField] private RLeg[] _rLegs;
-        [HideInInspector] public Vector3 _direction = Vector3.zero;
 
-        [SerializeField, Range(0f, 100f)] private float maxSpeed = 10f;
-        [SerializeField, Range(0f, 100f)] private float maxAcceleration = 10f;
+        [SerializeField, Range(0f, 20f)] private float maxSpeed = 10f;
+        [SerializeField, Range(0f, 20f)] private float maxAcceleration = 10f;
 
-        [SerializeField] private float _speed = 1f;
-        [SerializeField] private float _moveInterval = 2f;
-        [SerializeField] private float _moveDuration = 2f;
+        [SerializeField] private float _minMoveInterval = 0.5f;
+        [SerializeField] private float _maxMoveInterval = 1f;
+        [SerializeField] private float _minMoveDuration = 0.5f;
+        [SerializeField] private float _maxMoveDuration = 1f;
 
         [HideInInspector] public Vector3 velocity, delta;
 
-        private Vector3 desiredVelocity, moveToXZ;
+        private Vector3 desiredVelocity, desiredAngularVelocity;
         private Vector3 _lastPosition;
         private float _timer = 0f;
         private int lastLegIndex = 0;
@@ -33,7 +34,7 @@ namespace Nisl
             body = GetComponent<Rigidbody>();
             _lastPosition = body.position;
 
-            _transform = transform;
+            _transform = transform.GetChild(0);
         }
 
         void Start()
@@ -50,28 +51,33 @@ namespace Nisl
             if (gamepad == null)
                 return; // No gamepad connected.
 
-            // if (gamepad.rightTrigger.wasPressedThisFrame)
-            // {
-            //     Debug.Log("TRigger");
-            // }
-
             Vector2 move = gamepad.leftStick.ReadValue();
-            moveToXZ.x = move.x;
-            moveToXZ.z = move.y;
-            desiredVelocity = _transform.TransformDirection(moveToXZ) * maxSpeed;
 
-            // velocity.x = move.x * _speed * Time.deltaTime;
-            // velocity.z = move.y * _speed * Time.deltaTime;
-            //_rgbd.position += _rgbd.TransformDirection(velocity);
-
-
+            if (playerInputSpace)
+            {
+                Vector3 forward = playerInputSpace.forward;
+                forward.y = 0f;
+                forward.Normalize();
+                Vector3 right = playerInputSpace.right;
+                right.y = 0f;
+                right.Normalize();
+                desiredVelocity =
+                    (forward * move.y + right * move.x) * maxSpeed;
+            }
+            else
+            {
+                desiredVelocity.x = move.x * maxSpeed;
+                desiredVelocity.y = move.y * maxSpeed;
+            }
 
             delta = _lastPosition - body.position;
             _lastPosition = body.position;
-            //Debug.Log(velocity.sqrMagnitude);
-            //_transform.rotation = Quaternion.identity * Quaternion.Slerp(_transform.rotation, Quaternion.LookRotation(velocity.normalized, _transform.up), Time.deltaTime * 1);
 
-            _timer += Time.deltaTime / _moveInterval;
+            float ratio = Mathf.Clamp01(move.magnitude);
+
+            _transform.rotation = Quaternion.identity * Quaternion.Slerp(_transform.rotation, Quaternion.LookRotation(velocity.normalized, _transform.up), Time.deltaTime * 5);
+
+            _timer += Time.deltaTime / Mathf.Lerp(_maxMoveInterval, _minMoveInterval, ratio);
             if (_timer > 1f)
             {
                 _timer -= 1f;
@@ -80,7 +86,7 @@ namespace Nisl
                 {
                     if ((lastLegIndex + i) % legIndie == 0)
                     {
-                        _rLegs[i].MoveLeg(_moveDuration);
+                        _rLegs[i].MoveLeg(Mathf.Lerp(_maxMoveDuration, _minMoveDuration, ratio));
                     }
                 }
 

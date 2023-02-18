@@ -6,6 +6,7 @@ public class OrbitCamera : MonoBehaviour
 {
     [SerializeField] private Transform _focus = default;
     [SerializeField, Range(1f, 20f)] float _distance = 5f;
+    [SerializeField, Range(0.1f, 1f)] float _distanceNearScale = .66f;
     [SerializeField, Min(0f)] private float _focusRadius = 1f;
     [SerializeField, Range(0f, 1f)] private float _focusCentering = 0.5f;
     [SerializeField, Range(1f, 360f)] private float _rotationSpeed = 90f;
@@ -24,19 +25,34 @@ public class OrbitCamera : MonoBehaviour
 
     private Vector2 _input;
     private float lastManualRotationTime;
+    private float _distanceDefault;
+    private float _focusRadiusDefault;
 
     private bool _toggleNearDistance = false;
 
     void Awake()
     {
         focusPoint = _focus.position;
-
+        _distanceDefault = _distance;
+        _focusRadiusDefault = _focusRadius;
     }
     void OnValidate()
     {
         if (maxVerticalAngle < minVerticalAngle)
         {
             maxVerticalAngle = minVerticalAngle;
+        }
+    }
+
+    void Update()
+    {
+        var gamepad = Gamepad.current;
+        
+        if (gamepad != null && gamepad.rightStickButton.wasPressedThisFrame)
+        {
+            _toggleNearDistance = !_toggleNearDistance;
+            _distance = _toggleNearDistance ? _distanceDefault * _distanceNearScale : _distanceDefault;
+            _focusRadius = _toggleNearDistance ? _focusRadiusDefault * _distanceNearScale : _focusRadius;
         }
     }
 
@@ -106,8 +122,8 @@ public class OrbitCamera : MonoBehaviour
         if (gamepad == null)
             return false; // No gamepad connected.
 
-        _input.y = -gamepad.rightStick.ReadValue().x;
-        _input.x = gamepad.rightStick.ReadValue().y * _verticalScale;
+        _input.y = gamepad.rightStick.ReadValue().x;
+        _input.x = -gamepad.rightStick.ReadValue().y * _verticalScale;
 
         const float e = 0.001f;
         if (_input.x < -e || _input.x > e || _input.y < -e || _input.y > e)
